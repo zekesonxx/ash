@@ -1,0 +1,5 @@
+[package]
+
+name = "ash"
+version = "0.0.1"
+authors = ["Zeke Sonxx <zeke@zekesonxx.com>"]
