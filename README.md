@@ -7,4 +7,5 @@ I'm writing this to learn Rust, not to actually make a viable alternative to bas
     $ cargo build
     $ ./target/ash
 or
+
     $ cargo run
