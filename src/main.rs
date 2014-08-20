@@ -11,8 +11,21 @@ fn main() {
   let mut cwd = os::getcwd();
   //let mut history: Vec<&str> = Vec::new();
   //let mut historyi: uint;
+  let home = match os::homedir() {
+    Some(e) => e,
+    None => Path::new("/")
+  };
   loop {
-    print!("{} $ ", cwd.display());
+    print!("{cwd} $ ", cwd=match cwd.as_str() {
+      Some(e) => {
+        if home.is_ancestor_of(&cwd) {
+          format!("~{}", e.slice_from(home.as_vec().len()))
+        } else {
+          e.to_string()
+        }
+      },
+      None => "?".to_string()
+    });
     let rawinput = io::stdin().read_line().ok().expect("Error Occured");
     let input = rawinput.as_slice().trim();
     if input == "" { continue } //skip blank enters
@@ -33,7 +46,6 @@ fn main() {
           match os::homedir() {
             Some(e) => {
               let dir = e.join(args[0].slice_from(2)); //[~/]
-              println!("{}", dir.display());
               Some(dir)
             }, //hacky but whatever
             None => Path::new_opt(args[0])
