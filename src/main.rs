@@ -5,9 +5,24 @@ use std::os;
 use std::io::process::{Command};
 use std::path::Path;
 
+fn format_cwd(cwd: &Path, home: &Path) -> String {
+  match cwd.as_str() {
+    Some(e) => {
+      if home.is_ancestor_of(cwd) {
+        format!("~{}", e.slice_from(home.as_vec().len()))
+      } else {
+        e.to_string()
+      }
+    },
+    None => "?".to_string()
+  }
+}
+
 
 fn main() {
-  println!("ash Burning Fucking Shit shell")
+  println!("ash: A shell");
+  println!("Incredibly in beta");
+  println!("May eat your left shoes.");
   let mut cwd = os::getcwd();
   //let mut history: Vec<&str> = Vec::new();
   //let mut historyi: uint;
@@ -16,16 +31,7 @@ fn main() {
     None => Path::new("/")
   };
   loop {
-    print!("{cwd} $ ", cwd=match cwd.as_str() {
-      Some(e) => {
-        if home.is_ancestor_of(&cwd) {
-          format!("~{}", e.slice_from(home.as_vec().len()))
-        } else {
-          e.to_string()
-        }
-      },
-      None => "?".to_string()
-    });
+    print!("{cwd} $ ", cwd=format_cwd(&cwd, &home));
     let rawinput = io::stdin().read_line().ok().expect("Error Occured");
     let input = rawinput.as_slice().trim();
     if input == "" { continue } //skip blank enters
