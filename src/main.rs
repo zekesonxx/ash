@@ -9,6 +9,8 @@ use std::path::Path;
 fn main() {
   println!("ash Burning Fucking Shit shell")
   let mut cwd = os::getcwd();
+  //let mut history: Vec<&str> = Vec::new();
+  //let mut historyi: uint;
   loop {
     print!("{} $ ", cwd.display());
     let rawinput = io::stdin().read_line().ok().expect("Error Occured");
@@ -19,7 +21,6 @@ fn main() {
     match cmd {
       "cd" => {
         //set the current directory
-        //only works absolutely atm
         if args[0] == "~" {
           //go home
           cwd = match os::homedir() {
@@ -28,7 +29,7 @@ fn main() {
           };
           continue;
         }
-        let path: Option<Path> = if args[0].starts_with("~") {
+        let path: Option<Path> = if args[0].starts_with("~") { // ~/projects
           match os::homedir() {
             Some(e) => {
               let dir = e.join(args[0].slice_from(2)); //[~/]
@@ -37,7 +38,9 @@ fn main() {
             }, //hacky but whatever
             None => Path::new_opt(args[0])
           }
-        } else if args[0].starts_with(".") { //relative dir
+        } else if args[0].starts_with(".") { // ./bin or ../ash
+          Some(cwd.join(args[0]))
+        } else if !args[0].starts_with("/") { //we already know it doesn't start with .
           Some(cwd.join(args[0]))
         } else {
           Path::new_opt(args[0])
@@ -45,7 +48,7 @@ fn main() {
         match path {
           Some(new) => {
             match fs::stat(&new) {
-              Ok(stat) => { 
+              Ok(stat) => {
                 match stat.kind {
                   TypeDirectory => {cwd = new} // why is this so unhappy
                 } 
@@ -61,7 +64,7 @@ fn main() {
 
         match process {
           Ok(output) => {
-            println!("[{}] {}", output.status, String::from_utf8_lossy(output.output.as_slice()));
+            println!("{}", String::from_utf8_lossy(output.output.as_slice()));
 
           },
           Err(e) => {
