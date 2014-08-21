@@ -31,7 +31,7 @@ fn main() {
     None => Path::new("/")
   };
   loop {
-    print!("{cwd} $ ", cwd=format_cwd(&cwd, &home));
+    print!("{cwd} {symbol} ", cwd=format_cwd(&cwd, &home), symbol="$"); //Symbol is for futureproofing
     let rawinput = io::stdin().read_line().ok().expect("Error Occured");
     let input = rawinput.as_slice().trim();
     if input == "" { continue } //skip blank enters
@@ -42,13 +42,11 @@ fn main() {
         //set the current directory
         if args[0] == "~" {
           //go home
-          cwd = match os::homedir() {
-            Some(e) => Path::new(e),
-            None => Path::new("/")
-          };
+          cwd = home.clone();
           continue;
         }
         let path: Option<Path> = if args[0].starts_with("~") { // ~/projects
+          //this is intentionally NOT using the `home` variable
           match os::homedir() {
             Some(e) => {
               let dir = e.join(args[0].slice_from(2)); //[~/]
@@ -56,9 +54,7 @@ fn main() {
             }, //hacky but whatever
             None => Path::new_opt(args[0])
           }
-        } else if args[0].starts_with(".") { // ./bin or ../ash
-          Some(cwd.join(args[0]))
-        } else if !args[0].starts_with("/") { //we already know it doesn't start with .
+        } else if args[0].starts_with(".") || !args[0].starts_with("/") { // ./bin or ../ash || cd src
           Some(cwd.join(args[0]))
         } else {
           Path::new_opt(args[0])
