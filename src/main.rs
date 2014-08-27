@@ -5,6 +5,27 @@ use std::os;
 use std::io::process::{Command};
 use std::path::Path;
 
+#[cfg(windows)]
+fn get_username() -> String {
+  match os::getenv("USERNAME") {
+    Some(e) => e,
+    None => "?".to_string()
+  }
+}
+//I don't know how to get this yet
+fn get_hostname() -> String {
+  "hostname".to_string()
+}
+
+
+#[cfg(unix)]
+fn get_username() -> String {
+  match os::getenv("USER") {
+    Some(e) => e,
+    None => "?".to_string()
+  }
+}
+
 fn format_cwd(cwd: &Path, home: &Path) -> String {
   match cwd.as_str() {
     Some(e) => {
@@ -30,8 +51,13 @@ fn main() {
     Some(e) => e,
     None => Path::new("/")
   };
+
+  let hoststring = format!("{user}@{host}",
+    user=get_username(),
+    host=get_hostname()
+  );
   loop {
-    print!("{cwd} {symbol} ", cwd=format_cwd(&cwd, &home), symbol="$"); //Symbol is for futureproofing
+    print!("{hoststring} {cwd} {symbol} ", cwd=format_cwd(&cwd, &home), symbol="$", hoststring=hoststring); //Symbol is for futureproofing
     let rawinput = io::stdin().read_line().ok().expect("Error Occured");
     let input = rawinput.as_slice().trim();
     if input == "" { continue } //skip blank enters
