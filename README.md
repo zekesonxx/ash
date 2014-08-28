@@ -9,3 +9,27 @@ I'm writing this to learn Rust, not to actually make a viable alternative to bas
 or
 
     $ cargo run
+
+## Completed
+* `cd` command
+* Prompt displays ~ for paths within home
+
+## Current Goals/todo
+* Proper process running, piping to/from stdin/out/err
+* Meta environment variables, `PWD` and the like
+* Get hostname for prompt
+* Command history
+* Code cleanup
+* No lint errors
+
+## Long-term goals
+* PS1/PS2 prompt formatting
+* Tab completion
+* Piping output
+* Shell script interpreter
+
+## Contributing
+Please, do! Your code needs to work on both *nix and Windows though.
+
+## License
+MIT license, see `LICENSE` for full text
