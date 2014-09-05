@@ -12,11 +12,6 @@ fn get_username() -> String {
     None => "?".to_string()
   }
 }
-//I don't know how to get this yet
-fn get_hostname() -> String {
-  "hostname".to_string()
-}
-
 
 #[cfg(unix)]
 fn get_username() -> String {
@@ -24,6 +19,11 @@ fn get_username() -> String {
     Some(e) => e,
     None => "?".to_string()
   }
+}
+
+//I don't know how to get this yet
+fn get_hostname() -> String {
+  "hostname".to_string()
 }
 
 fn format_cwd(cwd: &Path, home: &Path) -> String {
@@ -44,20 +44,29 @@ fn main() {
   println!("ash: A shell");
   println!("Incredibly in beta");
   println!("May eat your left shoes.");
+  
+  //setup the persistant variables
   let mut cwd = os::getcwd();
-  //let mut history: Vec<&str> = Vec::new();
-  //let mut historyi: uint;
   let home = match os::homedir() {
     Some(e) => e,
     None => Path::new("/")
   };
-
   let hoststring = format!("{user}@{host}",
     user=get_username(),
     host=get_hostname()
   );
+  let symbol = if get_username() == "root".to_string() {
+    "#"
+  } else {
+    "$"
+  };
+
   loop {
-    print!("{hoststring} {cwd} {symbol} ", cwd=format_cwd(&cwd, &home), symbol="$", hoststring=hoststring); //Symbol is for futureproofing
+    print!("{hoststring} {cwd} {symbol} ", 
+      hoststring=hoststring,
+      cwd=format_cwd(&cwd, &home), 
+      symbol=symbol
+    );
     let rawinput = io::stdin().read_line().ok().expect("Error Occured");
     let input = rawinput.as_slice().trim();
     if input == "" { continue } //skip blank enters
