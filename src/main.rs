@@ -47,8 +47,8 @@ fn main() {
           Some(new) => {
             match fs::stat(&new) {
               Ok(stat) => {
-                match stat.kind {
-                  TypeDirectory => {cwd = new} // why is this so unhappy
+                if stat.kind == io::TypeDirectory {
+                  cwd = new
                 }
               },
               Err(e) => println!("No such file or directory: \"{}\"", args[0])
