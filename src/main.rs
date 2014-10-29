@@ -57,6 +57,10 @@ fn main() {
           None => println!("Failed to locate path")
         }
       }
+      "exit" => {
+        println!("Goodbye!");
+        break;
+      }
       _ => {
         let process = Command::new(cmd).cwd(&cwd).args(args).output();
 
