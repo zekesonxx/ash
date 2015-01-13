@@ -1,4 +1,3 @@
-
 use std::io;
 use std::io::fs;
 use std::os;
@@ -13,7 +12,7 @@ fn main() {
   println!("Incredibly in beta");
   println!("May eat your left shoes.");
 
-  let mut cwd = os::getcwd();
+  let mut cwd = os::getcwd().unwrap();
 
   loop {
     print!("{}", ash::format::format(&cwd));
@@ -47,7 +46,7 @@ fn main() {
           Some(new) => {
             match fs::stat(&new) {
               Ok(stat) => {
-                if stat.kind == io::TypeDirectory {
+                if stat.kind == io::FileType::Directory {
                   cwd = new
                 }
               },
