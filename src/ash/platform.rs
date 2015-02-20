@@ -2,6 +2,7 @@
  * Platform specific functions for ash
  */
 use std::os;
+use std::env;
 
 #[cfg(windows)]
 pub fn get_username() -> String {
