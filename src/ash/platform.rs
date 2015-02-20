@@ -5,7 +5,7 @@ use std::os;
 
 #[cfg(windows)]
 pub fn get_username() -> String {
-  match os::getenv("USERNAME") {
+  match env::var_os("USERNAME") {
     Some(e) => e,
     None => "?".to_string()
   }
