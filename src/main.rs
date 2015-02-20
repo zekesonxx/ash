@@ -1,8 +1,14 @@
-use std::io;
-use std::io::fs;
-use std::os;
-use std::io::process::{Command};
-use std::path::Path;
+#![feature(io)]
+#![feature(os)]
+#![feature(env)]
+#![feature(path)]
+#![feature(collections)]
+
+use std::old_io;
+use std::old_io::fs;
+use std::old_io::process::{Command};
+use std::old_path::Path;
+use std::env;
 
 mod ash;
 
@@ -12,11 +18,11 @@ fn main() {
   println!("Incredibly in beta");
   println!("May eat your left shoes.");
 
-  let mut cwd = os::getcwd().unwrap();
+  let mut cwd = env::current_dir().unwrap();
 
   loop {
     print!("{}", ash::format::format(&cwd));
-    let rawinput = io::stdin().read_line().ok().expect("Error Occured");
+    let rawinput = old_io::stdin().read_line().ok().expect("Error Occured");
     let input = rawinput.as_slice().trim();
     if input == "" { continue } //skip blank enters
     let opts: Vec<&str> = input.split_str(" ").collect();
@@ -26,11 +32,14 @@ fn main() {
         //set the current directory
         if args[0] == "~" {
           //go home
-          cwd = os::homedir().unwrap();
+          match env::home_dir() {
+            Some(p) => cwd = p,
+            None => println!("Error: Can not get home directory!")
+          }
           continue;
         }
         let path: Option<Path> = if args[0].starts_with("~") { // ~/projects
-          match os::homedir() {
+          match env::home_dir() {
             Some(e) => {
               let dir = e.join(args[0].slice_from(2)); //[~/]
               Some(dir)
@@ -46,7 +55,7 @@ fn main() {
           Some(new) => {
             match fs::stat(&new) {
               Ok(stat) => {
-                if stat.kind == io::FileType::Directory {
+                if stat.kind == old_io::FileType::Directory {
                   cwd = new
                 }
               },

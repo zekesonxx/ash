@@ -1,20 +1,20 @@
 /**
  * Platform specific functions for ash
  */
-use std::os;
+use std::env;
 
 #[cfg(windows)]
 pub fn get_username() -> String {
-  match os::getenv("USERNAME") {
-    Some(e) => e,
+  match env::var_os("USERNAME") {
+    Some(e) => e.into_string().unwrap(),
     None => "?".to_string()
   }
 }
 
 #[cfg(unix)]
 pub fn get_username() -> String {
-  match os::getenv("USER") {
-    Some(e) => e,
+  match env::var_os("USER") {
+    Some(e) => e.into_string().unwrap(),
     None => "?".to_string()
   }
 }
